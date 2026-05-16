@@ -26,16 +26,16 @@ class AuthController extends Controller
 
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['მითითებული მონაცემები არასწორია.'],
-            ]);
+            return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
         }
 
-        $request->session()->regenerate();
+        $user = Auth::user();
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'success' => true,
-            'user' => new UserResource(Auth::user()),
+            'token'   => $token,
+            'user'    => new UserResource($user),
         ]);
     }
 
@@ -44,10 +44,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(['success' => true]);
     }
