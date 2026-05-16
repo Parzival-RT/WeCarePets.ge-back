@@ -10,6 +10,7 @@ use App\Models\Company;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -96,6 +97,10 @@ class CompanyController extends Controller
         ];
 
         if ($request->hasFile('logo')) {
+            // ძველი სურათის წაშლა
+            if ($company->logo) {
+                Storage::disk('public')->delete($company->logo);
+            }
             $data['logo'] = $request->file('logo')->store('companies', 'public');
         }
 
@@ -108,6 +113,7 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company): JsonResponse
     {
+        Storage::disk('public')->delete($company->logo);
         $company->stories()->detach();
         $company->delete();
         return response()->json(null, 204);

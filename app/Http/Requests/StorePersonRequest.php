@@ -18,7 +18,7 @@ class StorePersonRequest extends FormRequest
             'name_en' => 'nullable|string|max:255',
             'surname_ka' => 'required|string|max:255',
             'surname_en' => 'nullable|string|max:255',
-            'image' => 'required|image|max:2048',
+            'image' => 'nullable|image|max:2048',
             'status' => 'nullable|in:active,inactive',
         ];
     }
@@ -36,7 +36,7 @@ class StorePersonRequest extends FormRequest
             'surname_ka.max' => 'გვარი არ უნდა აღემატებოდეს 255 სიმბოლოს.',
 
             // ფოტო
-            'image.required' => 'ფოტოს ატვირთვა აუცილებელია.',
+//            'image.required' => 'ფოტოს ატვირთვა აუცილებელია.',
             'image.image' => 'ატვირთული ფაილი უნდა იყოს სურათი.',
             'image.max' => 'სურათის ზომა არ უნდა აღემატებოდეს 2MB-ს.',
 

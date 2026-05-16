@@ -10,6 +10,7 @@ use App\Models\Person;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Storage;
 
 class PersonController extends Controller
 {
@@ -42,7 +43,9 @@ class PersonController extends Controller
                 'ka' => $request->surname_ka,
                 'en' => $request->surname_en ?? $request->surname_ka,
             ],
-            'image' => $request->file('image')->store('people', 'public'),
+            'image' => $request->hasFile('image')
+                ? $request->file('image')->store('people', 'public')
+                : '',
             'status' => $request->status ?? 'active',
         ]);
 
@@ -75,8 +78,13 @@ class PersonController extends Controller
         ];
 
         if ($request->hasFile('image')) {
+            // ძველი სურათის წაშლა
+            if ($person->image) {
+                Storage::disk('public')->delete($person->image);
+            }
             $data['image'] = $request->file('image')->store('people', 'public');
         }
+
 
         $person->update($data);
         return new PersonResource($person);
@@ -87,6 +95,7 @@ class PersonController extends Controller
      */
     public function destroy(Person $person): JsonResponse
     {
+        Storage::disk('public')->delete($person->image);
         $person->stories()->detach();
         $person->delete();
         return response()->json(null, 204);
