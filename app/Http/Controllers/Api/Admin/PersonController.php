@@ -47,6 +47,7 @@ class PersonController extends Controller
                 ? $request->file('image')->store('people', 'public')
                 : '',
             'status' => $request->status ?? 'active',
+            'registered_donation' => $request->registered_donation ?? 0,
         ]);
 
         return new PersonResource($person);
@@ -75,6 +76,7 @@ class PersonController extends Controller
                 'en' => $request->surname_en ?? $request->surname_ka,
             ],
             'status' => $request->status,
+            'registered_donation' => $request->registered_donation ?? 0,
         ];
 
         if ($request->hasFile('image')) {

@@ -113,7 +113,9 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company): JsonResponse
     {
-        Storage::disk('public')->delete($company->logo);
+        if ($company->logo) {
+            Storage::disk('public')->delete($company->logo);
+        }
         $company->stories()->detach();
         $company->delete();
         return response()->json(null, 204);

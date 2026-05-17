@@ -18,6 +18,7 @@ class Person extends Model
         'surname',
         'image',
         'status',
+        'registered_donation'
     ];
 
     /**

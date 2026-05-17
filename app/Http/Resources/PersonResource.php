@@ -20,6 +20,7 @@ class PersonResource extends JsonResource
             'stories_count' => $this->when($this->relationLoaded('stories'), fn() => $this->stories->count()),
             'stories' => StoryResource::collection($this->whenLoaded('stories')),
             'status' => $this->when($isAdmin, $this->status),
+            'registered_donation' => $this->when($isAdmin, $this->registered_donation),
             'created_at' => $this->created_at->toISOString(),
         ];
     }

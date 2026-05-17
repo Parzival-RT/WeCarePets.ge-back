@@ -14,14 +14,21 @@ class RegistrationController extends Controller
      */
     public function store(RegisterInterestRequest $request): JsonResponse
     {
-        Company::create([
+
+        $data = [
             'name' => ['ka' => $request->company_name, 'en' => $request->company_name],
             'contact_person' => $request->contact_person,
             'phone' => $request->phone,
             'package' => $request->package,
             'status' => 'pending',
             'group' => null,
-        ]);
+        ];
+
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('companies', 'public');
+        }
+
+        Company::create($data);
 
         return response()->json([
             'success' => true,
